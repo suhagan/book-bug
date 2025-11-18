@@ -1,34 +1,32 @@
-# BookBug – React + TypeScript Webshop
+# BookBug – React + TypeScript Webshop + Multi-Step Registration (Context API)
 
-This project is a fully client-side **Book Webshop** built using **React (Vite + TypeScript)**.
-It features:
+BookBug is a React + TypeScript **Book Webshop** enhanced with a full **5-step user registration flow** built with **Context API**, **React Router**, and **localStorage**.
 
-- Product listing
-- Search and filtering
-- Shopping cart (persistent via localStorage)
-- Checkout form
-- Optimized re-render handling
-- No unnecessary API calls
+The project demonstrates:
 
-**Important Note:**
-The given API (`http://10.100.3.140:3000/products`) was **not working** during development.
-Therefore, this webshop is a **self-designed, custom implementation** based on creative problem-solving and frontend best practices.
+- Dynamic product listing
+- Search & filter system
+- Shopping cart with global state
+- Checkout
+- **Multi-step registration form** (Context API + routing + persistence)
+- Optimized re-rendering and component design
 
 ---
 
-## Tech Stack
+# Tech Stack
 
 - **React (Vite + TypeScript)**
-- **CSS (responsive layout for mobile/tablet/desktop)**
-- **Context API + Custom Hooks**
-- **localStorage for persistent cart**
 - **React Router DOM**
+- **Context API**
+- **Custom Hooks**
+- **CSS (responsive UI)**
+- **localStorage (persistent states)**
 
 ---
 
-# How to Run the Project
+# How to Run
 
-```
+```bash
 npm install
 npm run dev
 ```
@@ -41,34 +39,46 @@ http://localhost:5173
 
 ---
 
-# Folder Structure
+# Updated Project Structure
 
 ```
 src/
 │
-├── components/        # Reusable UI elements
+├── components/
 │   ├── Header.tsx
 │   ├── Footer.tsx
 │   ├── ProductCard.tsx
 │   ├── SearchBar.tsx
 │   ├── SortFilterBar.tsx
+│   │
+│   ├── form/                # Multi-step form components
+│   │    ├── Step1PersonalData.tsx
+│   │    ├── Step2ContactData.tsx
+│   │    ├── Step3Address.tsx
+│   │    ├── Step4Visit.tsx
+│   │    ├── Step5Summary.tsx
+│   │
+│   └── common/
+│        └── CancelModal.tsx   # Reusable confirmation modal
 │
-├── pages/             # Main pages rendered by React Router
+├── pages/
 │   ├── Home.tsx
 │   ├── CartPage.tsx
 │   ├── CheckoutPage.tsx
 │
-├── data/
-│   └── books.ts       # Temporary product list since API was offline
+├── context/
+│   ├── CartContext.tsx
+│   └── FormContext.tsx        # Global registration form state
 │
 ├── hooks/
-│   └── useLocalStorage.ts  # Custom hook to persist cart
-│   └── useCart.ts  # Custom hook to persist cart
+│   ├── useLocalStorage.ts
+│   ├── useCart.tsform context
 │
-├── context/
-│   └── CartContext.tsx     # Global cart store
+├── data/
+│   └── books.ts               # Temporary product data (API offline)
 │
-├── types.ts           # Shared TypeScript types
+├── types/
+│   └── FormTypes.ts           # Strong typing for form data
 │
 ├── App.tsx
 ├── main.tsx
@@ -76,281 +86,180 @@ src/
 
 ```
 
-This structure ensures **clean separation**, easy scalability, and predictable file locations.
-
 ---
 
-# Features Overview
+# Webshop Features
 
 ## Product Listing
 
-Products are imported from `data/books.ts` (static data because API was unavailable).
-They are displayed using a `ProductCard` component.
+Based on static `books.ts`.
+Displayed using memoized `ProductCard` components.
 
-### How it works
+## Search System
 
-- `Home.tsx` loads all books from the static file.
-- It applies **search, filtering, sorting** using `useMemo` to avoid unnecessary recalculation.
-- Each product is passed down to a `ProductCard`, which is wrapped in `React.memo` to prevent re-renders unless its props change.
+Search by:
 
----
+- Title
+- Author
+- ISBN
 
-## Search + Filter System
+Multiple filters using `useMemo` for optimal performance.
 
-### Search supports:
+## A–Z Letter Filter
 
-- Book Name
-- Author Name
-- ISBN Number
+Filter by starting letter of book title.
 
-### Filter supports:
+## Sorting
 
-- Starting letter (A–Z)
-- Publish Year range
-- Price sorting (Low→High, High→Low)
+Sort by:
 
-### How it works
+- Price (low → high / high → low)
+- Publish year range
 
-#### SearchBar Component
+## Shopping Cart
 
-Takes:
+Global state via `CartContext`.
 
-```ts
-searchQuery;
-searchField;
-activeLetter;
-```
+Implemented using:
 
-And triggers callbacks:
+- `useLocalStorage` (persistent cart)
+- `useCart` custom hook
+- `React.memo` optimization
+- `useCallback` to stabilize update functions
 
-```ts
-onSearchQueryChange();
-onSearchFieldChange();
-onLetterChange();
-```
+## Checkout
 
-#### SortFilterBar Component
-
-Takes:
-
-```ts
-sortOption;
-minYear;
-maxYear;
-```
-
-And triggers:
-
-```ts
-onSortOptionChange();
-onMinYearChange();
-onMaxYearChange();
-```
-
-### Why use `useMemo`?
-
-```ts
-const filteredBooks = useMemo(() => { ... }, [
-  searchQuery,
-  searchField,
-  activeLetter,
-  sortOption,
-  minYear,
-  maxYear,
-]);
-```
-
-- Prevents running filtering logic on every re-render.
-- Only recalculates if a filter actually changed.
-- Improves performance with large product lists.
+Simulated order system that clears cart on completion.
 
 ---
 
-## Shopping Cart (Global State)
+# New Feature: Multi-Step Registration Form (5 Steps)
 
-### Tools Used:
+Implemented using:
 
-- `CartContext.tsx` (global state)
-- `useCart.ts` (custom hook)
-- `useLocalStorage.ts` (persistent cart)
+- **Context API** (single global `formData`)
+- **React Router** (each step has its own URL)
+- **localStorage** (persistent form)
+- **CSS animations** (slide in/out)
+- **Cancel confirmation modal**
+- **Full validation**
+- **No props passed between steps**
+
+### Steps:
+
+1. **Personal Data**
+   First name, last name, date of birth, gender
+2. **Contact Information**
+   Email, phone number
+3. **Address**
+   Street, zip code, city
+4. **Visit Details**
+   Purpose of visit, department
+5. **Summary & Confirmation**
+   Displays all entered data + Newsletter checkbox
+
+### Why Context API?
+
+- Avoids prop-drilling
+- Ensures every step accesses the same global state
+- Syncs updates instantly between components
+- Simplifies storing + loading form state
+
+### Why Routing?
+
+Each step has its own URL:
+
+```
+/register/step-1
+/register/step-2
+/register/step-3
+/register/step-4
+/register/step-5
+```
+
+Better UX + easier debugging.
+
+### Why localStorage?
+
+- Form persists after refresh
+- User can return later
+- Makes the registration flow feel real and stable
 
 ---
 
-# Cart System Architecture
+# FormContext Architecture
 
-## ➤ CartContext
-
-Centralized global state containing:
+`FormProvider` contains:
 
 ```ts
-items: CartItem[]
-totalItems: number
-totalPrice: number
-addToCart(book)
-removeFromCart(bookId)
-updateQuantity(bookId, qty)
-clearCart()
+formData; // global state object
+updateField(); // generic field updater
+resetForm(); // reset after submit
 ```
 
-### Why Context?
-
-- Allows all pages (Home, Cart, Checkout) to access cart data.
-- Avoids prop-drilling.
-- Prevents duplicate state copies / unnecessary API work.
-
-### Why `useCallback`?
-
-Cart functions are wrapped in:
+### Load/Save Logic:
 
 ```ts
-const addToCart = useCallback(...)
+useEffect(() => {
+  localStorage.setItem("bookBugFormData", JSON.stringify(formData));
+}, [formData]);
 ```
 
-This ensures:
-✔ Stable function reference
-✔ No unnecessary re-renders in children
-✔ `React.memo(ProductCard)` stays efficient
+### Access from components:
+
+```tsx
+const { formData, updateField } = useFormContext();
+```
 
 ---
 
-# useLocalStorage – Persistent Cart
+# Cancel Confirmation Modal
 
-```ts
-export function useLocalStorage<T>(key, initialValue);
-```
+A reusable component living in `/common/CancelModal.tsx`.
 
-### Why?
+It shows:
 
-- Keeps cart **even after page refresh**.
-- No backend required.
-- Avoids re-fetching or re-generating cart items.
+- Warning message
+- “Yes, Cancel” → navigate back
+- “No, Continue” → close modal
 
-### How it works
-
-- On first load → reads from localStorage
-- On updates → writes to localStorage automatically
-- Used only inside CartContext → centralized persistence
+Used in all 5 steps.
 
 ---
 
-# Custom Hook: useCart
+# UX Enhancements
 
-```ts
-import { useContext } from "react";
-import { CartContext } from "../context/CartContext";
-
-export const useCart = () => {
-  const ctx = useContext(CartContext);
-  if (!ctx) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
-  return ctx;
-};
-```
-
-### Why it exists
-
-- To simplify cart usage.
-- Instead of writing:
-
-```ts
-const { addToCart } = useContext(CartContext);
-```
-
-You write:
-
-```ts
-const { addToCart } = useCart();
-```
-
-Cleaner, reusable, safer.
-
-### Where it is called
-
-- Inside ProductCard (Add to Cart button)
-- In CartPage (update/remove items)
-- In CheckoutPage (clear cart after purchase)
-
----
-
-# Checkout Page
-
-### Purpose:
-
-- Simulates order submission
-- Collects minimal customer info
-- Clears shopping cart on completion
-
-### How it works:
-
-```ts
-handleSubmit()
-  → Validate cart
-  → Clear cart via context
-  → Show success message
-```
-
-No backend is needed; this is a frontend-only demonstration.
+- Slide-in / slide-out animations between steps
+- Disabled Next button until validation passes
+- Modal fade-in animation
+- Clean CSS layout for forms
+- “New here? Sign Up” link added to header for integration with webshop
 
 ---
 
 # Re-render Optimization Summary
 
-| Feature             | Optimization Used      | Why                                           |
-| ------------------- | ---------------------- | --------------------------------------------- |
-| Product list        | `useMemo`              | Prevents heavy filtering logic on each render |
-| AddToCart functions | `useCallback`          | Stable references prevent rerenders           |
-| ProductCard         | `React.memo`           | Renders ONLY when props change                |
-| Cart state          | Context + localStorage | No duplicate copies, no extra renders         |
-| Search & filter     | Local state only       | Does not affect other components              |
-
-**Result:**
-The UI stays **fast, smooth, and efficient**, even with more products.
+| Feature      | Optimization                          |
+| ------------ | ------------------------------------- |
+| Product list | `useMemo`                             |
+| ProductCard  | `React.memo`                          |
+| Cart context | `useCallback` hooks                   |
+| Form context | Single global state                   |
+| Modal        | Conditional rendering (`return null`) |
 
 ---
 
-# Requirements Checklist
+# Future Improvements
 
-### Build a webshop
-
-- Product list
-- Search
-- Filters
-- Sorting
-- Cart
-- Checkout
-
-### File Structure Rules
-
-- Components → `/components`
-- Pages → `/pages`
-- Hooks → `/hooks`
-- Context → `/context`
-- Types → `/types.ts`
-
-### Avoid unnecessary re-renders
-
-- `useMemo`, `useCallback`, `React.memo`
-- Shared data outside components
-
-### Avoid unnecessary API calls
-
-- No external API used
-- Static product list
-- Single source of truth (Context)
-
-### Handle API issue
-
-- Mentioned: API was unavailable → custom implementation used
+- Connect registration data to a backend API
+- Add user login + authentication
+- Create a user dashboard to edit submitted data
+- Add unit tests with Vitest
+- Add form progress bar
 
 ---
-
-# Future work
-
-- Age limit based filter
-- Call an external API
 
 # Author
 
 **Suhagan Mostahid**
-Full project design, architecture, and implementation.
+– Full implementation, architecture, and UI/UX design.
