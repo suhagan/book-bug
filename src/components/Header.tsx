@@ -6,6 +6,15 @@ export const Header: React.FC = () => {
 
   return (
     <header className="header">
+      <div className="signup-link">
+        New here?{" "}
+        <Link 
+          to="/register/step-1" 
+          className="signup-anchor"
+        >
+          Sign Up
+        </Link>
+      </div>
       <div className="header-inner">
         <Link to="/" className="logo">
           BookBug
