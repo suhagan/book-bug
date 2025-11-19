@@ -71,7 +71,7 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({
   return <FormContext.Provider value={value}>{children}</FormContext.Provider>;
 };
 
-
+// eslint-disable-next-line react-refresh/only-export-components
 export const useFormContext: () => FormContextValue = () => {
   const context = useContext(FormContext);
   if (!context) {
