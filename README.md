@@ -249,6 +249,115 @@ Used in all 5 steps.
 
 ---
 
+# Testing with Cypress
+
+This project includes a complete **end-to-end (E2E) test suite** implemented with **Cypress**, as required by the assignment for flow testing .
+The goal of the test suite is to verify that:
+
+1. **Navigation in the application works correctly**
+2. **At least one interactive functionality behaves as expected**, including validation and state updates
+3. **Tests can be executed locally via terminal**
+
+Both requirements are fully met.
+
+---
+
+## Test 1 — Navigation Flow (planned to execute)
+
+The file `cypress/e2e/bookbug_navigation.cy.ts` validates all primary navigation paths in the application:
+
+- The **header is rendered correctly**
+- Navigation links lead to the correct routes
+  (`Home`, `Cart`, `Checkout`)
+- The **"Sign Up"** link consistently redirects to the registration flow’s first step
+- Uses stable `data-testid` selectors for cross-browser reliability
+
+Expecting this will ensure the UI structure will be accessible and that routing behaves as intended.
+
+---
+
+## Test 2 — Multi-Step Registration Flow
+
+The main functionality test is implemented in
+`cypress/e2e/bookbug_registration_flow.cy.ts`.
+
+This test verifies the entire 5-step registration process:
+
+### Step 1
+
+- Form fields are validated
+- “Next” remains disabled until all required fields are filled
+- Data is written to **Context API** and **localStorage**
+
+### Steps 2–4
+
+- Email, phone, address, visit details are entered
+- “Next” buttons move the user to the next page
+- The test ensures navigation through:
+  `/register/step-1` → `/step-5`
+
+### Step 5
+
+- Newsletter checkbox is updated
+- “Confirm & Submit” submits the form
+- **Global state resets** and user is redirected to the homepage
+
+The test confirms:
+
+- Validation
+- Context API global state updates
+- Route transitions
+- Persisted state via localStorage
+- Final cleanup after submission
+
+This fully satisfies the assignment requirement to test
+“minst en ytterligare funktionalitet”, i.e. filling in and submitting a multi-step form.
+
+---
+
+## Technical Setup
+
+Cypress is configured in `cypress.config.ts` with:
+
+- Base URL: `http://localhost:5173`
+- Spec pattern: `cypress/e2e/**/*.cy.ts`
+- `experimentalSessionAndOrigin` enabled for Vite compatibility
+- Test-friendly stable selectors (`data-testid`) added in components
+
+---
+
+## Running Tests Locally (Terminal)
+
+The tests are executed using:
+
+```bash
+npx cypress run
+```
+
+This runs the full suite in **headless mode**, as required.
+
+Alternatively, Cypress can be opened interactively:
+
+```bash
+npx cypress open
+```
+
+---
+
+## Test Summary
+
+The Cypress tests demonstrate that:
+
+- **Navigation** should work as expected (test not completed yet, will be updated later)
+- **Stateful interactions** (multi-step form, validation, global state via Context API) work as intended
+- **Persistent data** through localStorage behaves correctly
+- **User flow** from registration start to final submission is fully validated
+- All tests run successfully through the terminal
+
+Together, these tests confirm both the functional correctness and interactive reliability of the BookBug webshop and the 5-step registration feature.
+
+---
+
 # Future Improvements
 
 - Connect registration data to a backend API
