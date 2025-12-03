@@ -36,6 +36,7 @@ const Step1PersonalData: React.FC = () => {
         <div className="form-field">
           <label>First Name</label>
           <input
+            id="firstName"
             type="text"
             title="First name"
             value={formData.firstName}
@@ -48,6 +49,7 @@ const Step1PersonalData: React.FC = () => {
         <div className="form-field">
           <label>Last Name</label>
           <input
+            id="lastName"
             type="text"
             title="Last name"
             value={formData.lastName}
@@ -62,6 +64,7 @@ const Step1PersonalData: React.FC = () => {
         <div className="form-field">
           <label>Date of Birth</label>
           <input
+            id="dateOfBirth"
             type="date"
             title="Date of birth"
             value={formData.dateOfBirth}
@@ -75,6 +78,7 @@ const Step1PersonalData: React.FC = () => {
         <div className="form-field">
           <label>Gender</label>
           <select
+            id="gender"
             title="Gender selection"
             value={formData.gender}
             onChange={(e) => updateField("gender", e.target.value)}
